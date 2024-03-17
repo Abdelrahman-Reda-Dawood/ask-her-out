@@ -6,7 +6,7 @@ const inter = Patrick_Hand({ weight: ["400"], subsets: ["latin-ext"] });
 
 export const metadata: Metadata = {
   title: "Date Me",
-  description: "Sorry You cannot reject this request",
+  description: "You Cannot Say No!",
 };
 
 export default function RootLayout({

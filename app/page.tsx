@@ -3,12 +3,14 @@ import Image from "next/image";
 import { useState } from "react";
 
 export default function Home() {
-  const [sureButton, setSureButton] = useState(false);
-  const [isSecondButtonHovered, setIsSecondButtonHovered] = useState(false);
-
-  const [buttonTextIndex, setButtonTextIndex] = useState(0);
+  const [yesButton, setYesButton] = useState(false);
+  const [isYesButtonHovered, setIsyesButtonHovered] = useState(false);
+  const [isNoButtonHovered, setIsNoButtonHovered] = useState(false);
+  const [showBigHearts, setShowBigHearts] = useState(false);
+  const [yesButtonIndex, setYesButtonIndex] = useState(0);
 
   const buttonTexts = [
+    "Yesss",
     "Sure",
     "Absolutely",
     "Of Course",
@@ -16,56 +18,108 @@ export default function Home() {
     "I Agree",
   ];
 
+  const handleFirstButtonClick = () => {
+    setYesButton(true);
+    setShowBigHearts(true);
+
+    setTimeout(() => {
+      setShowBigHearts(false);
+    }, 3000);
+  };
+
   const handleSecondButtonClick = () => {
-    setIsSecondButtonHovered(true);
-    setSureButton(false); // Reset the first button text
-    setButtonTextIndex((prevIndex) => (prevIndex + 1) % buttonTexts.length); // Cycle through the texts
+    setIsNoButtonHovered(true);
+    setYesButton(false);
+    setYesButtonIndex((prevIndex) => (prevIndex + 1) % buttonTexts.length);
   };
 
   return (
-    <main className="flex flex-col flex-wrap items-center min-h-screen p-24 text-white gap-14">
-      <div className="flex flex-col items-center justify-between h-full gap-3">
-        <Image
-          unoptimized
-          className="aspect-square"
-          src={`${
-            sureButton
-              ? "/kisses.gif"
-              : isSecondButtonHovered
-              ? "/angry.gif"
-              : "/shy.gif"
-          }`}
-          alt="panadas"
-          width={140}
-          height={180}
-        />
-        <h1 className="self-center h-6 text-2xl font-semibold text-center">
-          {sureButton
+    <main className="flex flex-col flex-1 items-center min-h-screen p-24 text-white gap-12">
+      <div className=" flex flex-col items-center justify-between h-full gap-6">
+        <div className="relative overflow-hidden">
+          <div className="relative z-50">
+            <Image
+              unoptimized
+              className="aspect-square z-50"
+              src={`${
+                yesButton
+                  ? "/kisses.gif"
+                  : isNoButtonHovered
+                  ? "/angry.gif"
+                  : "/shy.gif"
+              }`}
+              alt="panadas"
+              width={140}
+              height={180}
+            />
+          </div>
+          {showBigHearts && (
+            <div className="absolute inset-2 z-10">
+              <Image
+                src="/big-hearts.gif"
+                alt="big hearts"
+                layout="fill"
+                objectFit="cover"
+                objectPosition="center"
+              />
+            </div>
+          )}
+        </div>
+
+        <h1 className="self-center h-6 min-w-32 text-2xl font-semibold text-center tracking-wide">
+          {yesButton
             ? "Yaaaaaaaay!"
-            : isSecondButtonHovered
+            : isNoButtonHovered
             ? "You Cannot Say No"
             : "Would You Go Out On a Date With Me??"}
         </h1>
       </div>
 
-      <div className="flex justify-between gap-2 text-nowrap">
+      <div className="relative flex justify-between gap-2 text-nowrap md:mt-0 mt-6">
+        {isYesButtonHovered && (
+          <>
+            <Image
+              src={"/hearts.gif"}
+              alt="hearts"
+              width={30}
+              height={27}
+              className="absolute -top-8 -left-3"
+            />
+            <Image
+              src={"/hearts.gif"}
+              alt="hearts"
+              width={30}
+              height={27}
+              className="absolute -top-8 md:right-[95px] right-[85px]"
+            />
+          </>
+        )}
+
         <button
-          onClick={() => {
-            setSureButton(true);
+          onMouseEnter={() => {
+            setIsyesButtonHovered(true);
           }}
-          className="p-2 font-semibold transition-colors bg-blue-400 rounded shadow-md sm:text-2xl hover:bg-blue-500 ring-1 ring-gray-100 duration-400 xs:text-md">
-          {buttonTexts[buttonTextIndex]}
+          onMouseLeave={() => {
+            setIsyesButtonHovered(false);
+          }}
+          onClick={handleFirstButtonClick}
+          className="p-3 z-10 font-semibold transition-colors bg-blue-400 rounded shadow-md sm:text-xl hover:bg-blue-500 ring-1 ring-gray-100 duration-400 xs:text-md">
+          {buttonTexts[yesButtonIndex]}
         </button>
 
         <button
           onClick={handleSecondButtonClick}
           onMouseEnter={() => {
-            setIsSecondButtonHovered(true);
+            setIsNoButtonHovered(true);
+            setYesButton(false);
+            setShowBigHearts(false);
           }}
           onMouseLeave={() => {
-            setIsSecondButtonHovered(false);
+            setIsNoButtonHovered(false);
           }}
-          className="p-2 font-semibold transition-all bg-red-400 rounded shadow-md cursor-default sm:text-2xl hover:bg-red-500 sm:hover:opacity-0 ring-1 ring-gray-100 duration-400 xs:text-md">
+          className={`p-2 w-full font-semibold transition-all bg-red-400 rounded shadow-md cursor-default sm:text-xl hover:bg-red-500 ring-1 ring-gray-100 duration-400 xs:text-md ${
+            isNoButtonHovered && "translate-y-24 rotate-45 "
+          }`}>
           Sorry, No
         </button>
       </div>
